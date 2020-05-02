@@ -4,24 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primaryWhite"
     tools:context=".MainActivity">
 
-    <Button
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/but_id"
-        android:text="读取通话记录"
-        android:textSize="30dp"
-        tools:ignore="MissingConstraints" />
+        android:paddingLeft="15dp"
+        tools:ignore="MissingConstraints">
+        <Button
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/read_contacts"
+            android:text="读取通话记录"
+            android:textSize="25dp" />
+
+        <Button
+            android:layout_width="115dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/most_contact"
+            android:text="最爱"
+            android:textSize="25dp"
+            android:layout_marginLeft="5dp"/>
+    </LinearLayout>
 
     <ListView
-        android:id="@+id/contents_item"
+        android:id="@+id/contents_item_five"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/primaryWhite"
-        android:layout_marginTop="60dp"
-        android:divider="@color/gray"
-        android:dividerHeight="1dp" />
+        android:layout_marginTop="55dp"
+        android:layout_marginBottom="320dp"
+        android:divider="@color/primaryWhite"/>
+
+    <TextView
+        android:id="@+id/tv_old"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="420dp"
+        android:paddingLeft="20dp"
+        tools:ignore="MissingConstraints" />
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/contents_item_old"
+        android:background="@color/primaryWhite"
+        android:layout_marginTop="437dp"
+        android:divider="@color/primaryWhite"/>
+
 
 
 

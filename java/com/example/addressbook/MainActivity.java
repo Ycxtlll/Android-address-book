@@ -16,13 +16,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    private Button button;
+    private Button button1;
+    private Button button2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,27 +33,77 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         checkPermission();
         //ContactsUtil.addContent(this,"lttyy","911119","1588379390990","200","1");
-        button = findViewById(R.id.but_id);
-        button.setOnClickListener(this);
+        button1 = findViewById(R.id.read_contacts);
+        button1.setOnClickListener(this);
+        button2 = findViewById(R.id.most_contact);
+        button2.setOnClickListener(this);
     }
+
+    private String TAG = "Address-Book: ";
 
     @Override
     public void onClick(View v) {
+        List<Map<String,String>> datalist;
         //获得授权才可以点击
         if (checkPermission()){
-            if (v.getId() == R.id.but_id) {
+            if (v.getId() == R.id.read_contacts) {
                 Log.i(TAG, "读取通话记录：");
-                List<Map<String,String>> datalist =ContactsUtil.getContacts(this);
-                ListView lv = findViewById(R.id.contents_item);
-                SimpleAdapter adapter = new SimpleAdapter(this,datalist, R.layout.contact_items,
-                        new String[]{"name","number","date","duration","type"},
-                        new int[]{R.id.tv_name,R.id.tv_number,R.id.tv_date,R.id.tv_duration,R.id.tv_type});
-                lv.setAdapter(adapter);
+                datalist =ContactsUtil.getContacts(this);
+                //datalist.forEach(System.out::println);
+                viewCk(datalist);
+            }
+            if (v.getId() == R.id.most_contact){
+                Log.i(TAG,"通话次数最多或时间最长:");
+                datalist =ContactsUtil.getContacts(this);
+                mostTalk(datalist);
             }
         }
     }
 
-    private String TAG = "Address-Book: ";
+    /**
+     * 获取通话次数最多的记录
+     * @param datalist
+     */
+    public void mostTalk(List<Map<String,String>> datalist){
+
+    }
+
+    /**
+     * 展示listview
+     * @param datalist
+     */
+    public void viewCk(List<Map<String,String>> datalist){
+        ListView lv = findViewById(R.id.contents_item_five);
+        List<Map<String,String>> ff = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            ff.add(datalist.get(i));
+        }
+        setView(lv,ff);
+        if (datalist.size()>5){
+            List<Map<String,String>> ll = new ArrayList<>();
+            ListView llv = findViewById(R.id.contents_item_old);
+            for (int i = 5; i < datalist.size(); i++) {
+                ll.add(datalist.get(i));
+            }
+            setView(llv,ll);
+            TextView textView = findViewById(R.id.tv_old);
+            textView.setText("较早些时候");
+        }
+    }
+
+    /**
+     * 抽象adapter
+     * @param lv
+     * @param datalist
+     */
+    public void setView(ListView lv, List<Map<String,String>> datalist){
+        SimpleAdapter adapter = new SimpleAdapter(this,datalist, R.layout.contact_items,
+                new String[]{"name","number","date","duration","type"},
+                new int[]{R.id.tv_name,R.id.tv_number,R.id.tv_date,R.id.tv_duration,R.id.tv_type});
+        lv.setAdapter(adapter);
+    }
+
+
     //申请未授权的权限列表
     private List<String> unPerimissionList = new ArrayList<>();
     //获取apk包名

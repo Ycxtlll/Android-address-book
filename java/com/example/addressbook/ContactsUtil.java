@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 通话记录工具类
+ */
 public class ContactsUtil {
 
     private static String TAG = "Address-Book: ";
@@ -66,7 +69,7 @@ public class ContactsUtil {
                     break;
             }
             Map<String, String> map = new HashMap<>();
-            map.put("name", (name == null) ? "未备注联系人" : name);
+            map.put("name", (name == null) ? "无备注" : name);
             map.put("number", number);
             map.put("date", date);
             if (duration > 60) {
@@ -77,7 +80,6 @@ public class ContactsUtil {
             map.put("type", typeString);
             myContacts.add(map);
         }
-        myContacts.forEach(System.out::println);
         //关闭cursor
         cursor.close();
         return myContacts;

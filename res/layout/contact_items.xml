@@ -20,6 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="name"
+            android:textColor="@color/black"
             android:textSize="20dp" />
 
         <TextView
@@ -28,8 +29,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:text="number"
+            android:textColor="@color/black_light"
             android:textSize="15dp"/>
-        
+
     </LinearLayout>
 
     <LinearLayout
