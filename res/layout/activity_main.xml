@@ -6,13 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Address Book!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/but_id"
+        android:text="读取通话记录"
+        android:textSize="30dp"
+        tools:ignore="MissingConstraints" />
+
+    <ListView
+        android:id="@+id/contents_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/primaryWhite"
+        android:layout_marginTop="60dp"
+        android:divider="@color/gray"
+        android:dividerHeight="1dp" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
