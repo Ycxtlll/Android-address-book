@@ -16,27 +16,30 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    private Button button1;
-    private Button button2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //检查授权
         checkPermission();
-        //ContactsUtil.addContent(this,"lttyy","911119","1588379390990","200","1");
-        button1 = findViewById(R.id.read_contacts);
+
+        //Long time = System.currentTimeMillis();
+        //ContactsUtil.addContent(this,"oty","123756",time.toString(),"60","2");
+
+        Button button1 = findViewById(R.id.read_contacts);
         button1.setOnClickListener(this);
-        button2 = findViewById(R.id.most_contact);
+        Button button2 = findViewById(R.id.most_contact);
         button2.setOnClickListener(this);
+        Button button3 = findViewById(R.id.max_length);
+        button3.setOnClickListener(this);
     }
 
     private String TAG = "Address-Book: ";
@@ -46,18 +49,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         List<Map<String,String>> datalist;
         //获得授权才可以点击
         if (checkPermission()){
+            datalist =ContactsUtil.getContacts(this);
             if (v.getId() == R.id.read_contacts) {
                 Log.i(TAG, "读取通话记录：");
-                datalist =ContactsUtil.getContacts(this);
-                //datalist.forEach(System.out::println);
                 viewCk(datalist);
             }
             if (v.getId() == R.id.most_contact){
-                Log.i(TAG,"通话次数最多或时间最长:");
-                datalist =ContactsUtil.getContacts(this);
+                Log.i(TAG,"通话次数最多:");
                 mostTalk(datalist);
             }
+            if (v.getId() == R.id.max_length){
+                Log.i(TAG,"通话时长最长:");
+                longestCall(datalist);
+            }
         }
+    }
+
+    private AlertDialog conDialog;
+    /**
+     * 获取通话时长最长的记录
+     * @param datalist
+     */
+    public void longestCall(List<Map<String,String>> datalist){
+        Map<String,Integer> map = new HashMap<>();
+        for (int i = 0; i < datalist.size(); i++) {
+            map.put(datalist.get(i).get("number"),
+                    Integer.parseInt(datalist.get(i).get("duration")));
+        }
+        String[] longC = ContactsUtil.getCallTime(map);
+        System.out.println("num:"+longC[0]+",length:"+longC[1]);
+        String name = ContactsUtil.getName(this,longC[0]);
+        //清空会话框
+        conDialog = null;
+        contactDialog("您与他的通话时间最久-> ", name, longC[0]);
     }
 
     /**
@@ -65,7 +89,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param datalist
      */
     public void mostTalk(List<Map<String,String>> datalist){
+        String[] numberArr = new String[datalist.size()];
+        for (int i = 0; i < datalist.size(); i++) {
+            numberArr[i] = datalist.get(i).get("number");
+        }
+        String[] mostT = ContactsUtil.mostTouchNumber(numberArr);
+        Log.i("MainAc mostTouch:",mostT[0]+","+mostT[1]);
+        String name = ContactsUtil.getName(this,mostT[0]);
+        Log.i("MainAc name:",name);
+        //清空会话框
+        conDialog = null;
+        //拨打电话对话框
+        String msg = "您与他联系的最频繁-> ";
+        contactDialog(msg,name,mostT[0]);
+    }
 
+    /**
+     * 拨打电话
+     * @param name
+     * @param pNumber
+     */
+    public void contactDialog(String msg ,String name, String pNumber){
+        if (conDialog == null){
+            conDialog = new AlertDialog.Builder(this)
+                    .setMessage(msg + name+" : "+ pNumber)
+                    .setPositiveButton("打给他",(dialog, which) -> {
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        Uri data = Uri.parse("tel:" + pNumber);
+                        intent.setData(data);
+                        startActivity(intent);
+                    })
+                    .setNegativeButton("取消",(dialog, which) -> {
+                        conDialog.cancel();
+                    }).create();
+        }
+        conDialog.show();
     }
 
     /**
@@ -73,26 +131,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param datalist
      */
     public void viewCk(List<Map<String,String>> datalist){
+        //datalist.forEach(System.out::println);
         ListView lv = findViewById(R.id.contents_item_five);
-        List<Map<String,String>> ff = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            ff.add(datalist.get(i));
-        }
-        setView(lv,ff);
-        if (datalist.size()>5){
-            List<Map<String,String>> ll = new ArrayList<>();
-            ListView llv = findViewById(R.id.contents_item_old);
-            for (int i = 5; i < datalist.size(); i++) {
-                ll.add(datalist.get(i));
-            }
-            setView(llv,ll);
-            TextView textView = findViewById(R.id.tv_old);
-            textView.setText("较早些时候");
-        }
+        MyAdapter adapter = new MyAdapter(this,datalist);
+        lv.setAdapter(adapter);
     }
 
     /**
-     * 抽象adapter
+     * 抽象SimpleAdapter
+     * 废弃
      * @param lv
      * @param datalist
      */
@@ -112,7 +159,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //申请的权限列表
     private String[] permissionList = new String[]{
             Manifest.permission.READ_CALL_LOG,
-            Manifest.permission.WRITE_CALL_LOG
+            Manifest.permission.WRITE_CALL_LOG,
+            //获取联系人权限，没有也可
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.WRITE_CONTACTS,
+            //拨打电话权限
+            Manifest.permission.CALL_PHONE
     };
 
     /**

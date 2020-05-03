@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:paddingLeft="20dp">
+    android:paddingBottom="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,6 +58,17 @@
             android:layout_marginLeft="20dp"
             android:text="duration" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            android:layout_marginRight="20dp">
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:id="@+id/new_five"
+                android:textColor="@color/nfive"/>
+        </LinearLayout>
     </LinearLayout>
 
 

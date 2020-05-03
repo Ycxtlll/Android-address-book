@@ -7,4 +7,6 @@
     <color name="gray">#CCCCCC</color>
     <color name="black">#000000</color>
     <color name="black_light">#CC000000</color>
+    <color name="red">#C2FF0037</color>
+    <color name="nfive">#009900</color>
 </resources>
