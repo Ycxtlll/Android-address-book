@@ -135,7 +135,7 @@ public class ContactsUtil {
     }
 
     /**
-     * 计算最长是键通话记录
+     * 计算通话时间最长的记录
      * @param map
      * @return
      */
